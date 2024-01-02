@@ -1,0 +1,21 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore build or output directories
+build/
+dist/
+
+# Ignore coverage reports
+coverage/
+
+# Ignore generated or compiled files
+*.min.js
+*.min.css
+*.json
+
+# Ignore log files
+*.log
+
+# Ignore configuration files
+.eslintrc
+.prettierrc

@@ -1,0 +1,23 @@
+# Dependency directories
+node_modules/
+
+# Distribution directory
+dist/
+
+# Environment variables file
+.env
+
+# IDE and editor settings
+.vscode/
+.idea/
+
+# Log files
+*.log
+
+# Build artifacts
+build/
+out/
+
+# OS generated files
+.DS_Store
+Thumbs.db
