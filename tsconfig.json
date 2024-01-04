@@ -18,8 +18,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
+    "noEmitOnError": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true
   },
   "include": ["src"],
