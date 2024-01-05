@@ -21,7 +21,6 @@
     "noEmitOnError": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
-    "allowImportingTsExtensions": true,
     "skipLibCheck": true
   },
   "include": ["src"],
