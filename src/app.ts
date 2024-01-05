@@ -1,13 +1,15 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 
-import { v1, v2 } from './router.js';
+import { v1, v2 } from './app.router.js';
 import { handleError } from './middleware/error.middleware.js';
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 6969;
+
+app.use(express.json());
 
 app.use('/api', v1);
 app.use('/api', v2);

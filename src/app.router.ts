@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { usersRouterV1, usersRouterV2 } from './modules/users/router.ts';
+import { usersRouterV1, usersRouterV2 } from './api/users/users.router.js';
 
 export const v1 = express.Router();
 export const v2 = express.Router();
