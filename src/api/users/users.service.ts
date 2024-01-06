@@ -1,23 +1,25 @@
 import { NextFunction, Request, Response } from 'express';
-import { z } from 'zod';
 
-const Login = z.object({
-  username: z.string({
-    required_error: 'Username is required',
-    invalid_type_error: 'Username must be a string',
-  }),
-  password: z.string({
-    required_error: 'Password is required',
-    invalid_type_error: 'Password must be a string',
-  }),
-});
-
-type ILogin = z.infer<typeof Login>;
+import {
+  ILogin,
+  IRegistration,
+  validateLoginData,
+  validateRegistrationData,
+} from './users.validator.js';
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const loginDetails: ILogin = Login.parse(req.body);
-    res.status(200).send(loginDetails);
+    const login: ILogin = validateLoginData(req.body);
+    res.status(200).send(login);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const register = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const registration: IRegistration = validateRegistrationData(req.body);
+    res.status(200).send(registration);
   } catch (err) {
     next(err);
   }
