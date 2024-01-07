@@ -6,7 +6,18 @@ import { HttpStatusCode } from '../constants/http.js';
 export const handleError = (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof ZodError) {
     handleUnprocessableContent(err, res);
+  } else {
+    handleAnyError(err, res);
   }
+};
+
+const handleAnyError = (err: unknown, res: Response) => {
+  console.error(err);
+  const response = {
+    status: HttpStatusCode.INTERNAL_SERVER_ERROR,
+    message: 'Internal server error',
+  };
+  res.status(response.status).send(response);
 };
 
 const handleUnprocessableContent = (err: ZodError, res: Response) => {

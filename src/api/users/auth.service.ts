@@ -6,11 +6,14 @@ import {
   validateLoginData,
   validateRegistrationData,
 } from './users.validator.js';
+import { IUser } from './users.type.js';
+import { userRepository } from './users.reporitory.js';
+import { HttpHeader, HttpStatusCode } from '../../constants/http.js';
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
   try {
     const login: ILogin = validateLoginData(req.body);
-    res.status(200).send(login);
+    res.status(HttpStatusCode.OK).send(login);
   } catch (err) {
     next(err);
   }
@@ -18,16 +21,28 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 
 export const logout = (_req: Request, res: Response, next: NextFunction) => {
   try {
-    res.status(200).send();
+    res.status(HttpStatusCode.OK).send();
   } catch (err) {
     next(err);
   }
 };
 
-export const register = (req: Request, res: Response, next: NextFunction) => {
+export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const registration: IRegistration = validateRegistrationData(req.body);
-    res.status(200).send(registration);
+    // TODO: check if username and email already exist (throw ClientError?)
+    const id = await userRepository.create(registration);
+    const user: IUser = {
+      id,
+      firstName: registration.firstName,
+      lastName: registration.lastName,
+      username: registration.username,
+      email: registration.email,
+    };
+    res
+      .setHeader(HttpHeader.CONTENT_LOCATION, `/users/${id}`)
+      .status(HttpStatusCode.CREATED)
+      .send(user);
   } catch (err) {
     next(err);
   }
