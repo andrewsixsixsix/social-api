@@ -1,11 +1,16 @@
 import { z } from 'zod';
 
 // schemas
-const Name = z
-  .string()
+const FirstName = z
+  .string({
+    required_error: 'First name is required',
+    invalid_type_error: 'First name must be a string',
+  })
   .regex(/^[A-Za-z]+(?:\s[A-Za-z]+)*$/, 'Invalid name value')
-  .nullable()
-  .default(null);
+  .min(1, 'Minimum name length is 1 character')
+  .max(32, 'Maximum name length is 32 characters');
+
+const LastName = FirstName.nullable().default(null);
 
 const Username = z
   .string({
@@ -21,7 +26,8 @@ const Email = z
     required_error: 'Email is required',
     invalid_type_error: 'Email must be a string',
   })
-  .email({ message: 'Invalid email value' });
+  .email({ message: 'Invalid email value' })
+  .max(64, 'Maximum email length is 64 characters');
 
 const Password = z
   .string({
@@ -38,8 +44,8 @@ const Login = z.object({
 
 const Registration = z
   .object({
-    firstName: Name,
-    lastName: Name,
+    firstName: FirstName,
+    lastName: LastName,
     username: Username,
     email: Email,
     password: Password,
@@ -48,7 +54,14 @@ const Registration = z
       invalid_type_error: 'Password confirmation must be a string',
     }),
   })
-  .refine((data) => data.password === data.passwordConfirmation, 'Passwords do not match');
+  .refine((data) => data.password === data.passwordConfirmation, 'Passwords do not match')
+  .transform((data) => ({
+    firstName: data.firstName,
+    lastName: data.lastName,
+    username: data.username,
+    email: data.email,
+    password: data.password,
+  }));
 
 // types
 export type ILogin = z.infer<typeof Login>;
