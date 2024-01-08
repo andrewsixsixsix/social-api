@@ -9,7 +9,9 @@ const mysqlConfig: ConnectionOptions = {
   database: process.env.DATABASE_NAME,
   host: process.env.DATABASE_HOST,
   port: Number(process.env.DATABASE_PORT),
+  multipleStatements: false,
   namedPlaceholders: true,
+  rowsAsArray: true,
 };
 
 export const pool = mysql.createPool({

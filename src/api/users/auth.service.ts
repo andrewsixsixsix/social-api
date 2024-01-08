@@ -30,7 +30,18 @@ export const logout = (_req: Request, res: Response, next: NextFunction) => {
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const registration: IRegistration = validateRegistrationData(req.body);
-    // TODO: check if username and email already exist (throw ClientError?)
+    const [isEmailExists, isUsernameExists] = await Promise.all([
+      userRepository.isEmailExists(registration.email),
+      userRepository.isUsernameExists(registration.username),
+    ]);
+    if (isEmailExists || isUsernameExists) {
+      // TODO: throw ClientError and add message for case when both exist
+      res.status(HttpStatusCode.CONFLICT).send({
+        status: HttpStatusCode.CONFLICT,
+        message: `${isEmailExists ? 'Email' : 'Username'} already exists`,
+      });
+      return;
+    }
     const id = await userRepository.create(registration);
     const user: IUser = {
       id,
