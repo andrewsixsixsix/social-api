@@ -9,6 +9,7 @@ import {
 import { IUser } from './users.type.js';
 import { userRepository } from './users.reporitory.js';
 import { HttpHeader, HttpStatusCode } from '../../constants/http.js';
+import { HttpError } from '../../common/errors/HttpError.js';
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,6 +28,8 @@ export const logout = (_req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// TODO: send response and catch error in router? To omit passing req, res and next to service layer
+//  so pass only request body with registration data here
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const registration: IRegistration = validateRegistrationData(req.body);
@@ -35,12 +38,11 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       userRepository.isUsernameExists(registration.username),
     ]);
     if (isEmailExists || isUsernameExists) {
-      // TODO: throw ClientError and add message for case when both exist
-      res.status(HttpStatusCode.CONFLICT).send({
-        status: HttpStatusCode.CONFLICT,
-        message: `${isEmailExists ? 'Email' : 'Username'} already exists`,
-      });
-      return;
+      const message =
+        isEmailExists && isUsernameExists
+          ? 'Email and username already exist'
+          : `${isEmailExists ? 'Email' : 'Username'} already exists`;
+      throw new HttpError(HttpStatusCode.CONFLICT, message);
     }
     const id = await userRepository.create(registration);
     const user: IUser = {
