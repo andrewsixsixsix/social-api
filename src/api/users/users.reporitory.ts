@@ -1,15 +1,14 @@
 import { IRegistration } from './users.validator.js';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 
-import { pool } from '../../config/mysql.config.js';
+import { knexx } from '../../config/mysql.config.js';
 
 interface IExists extends RowDataPacket {
   0: boolean;
 }
 
 const create = async (userData: IRegistration) => {
-  try {
-    const sql = `
+  const sql = `
         INSERT INTO users (
           username,
           email,
@@ -25,12 +24,8 @@ const create = async (userData: IRegistration) => {
           :lastName
         );
     `;
-    const [res] = await pool.query<ResultSetHeader>(sql, userData);
-    return res.insertId;
-  } catch (err) {
-    // TODO: throw ServerError?
-    throw err;
-  }
+  const [res] = await knexx.raw<ResultSetHeader[]>(sql, userData);
+  return res.insertId;
 };
 
 const isEmailExists = async (email: string): Promise<boolean> => {
@@ -44,7 +39,7 @@ const isEmailExists = async (email: string): Promise<boolean> => {
           email = :email
       );
   `;
-  const [rows] = await pool.query<IExists[]>(sql, { email });
+  const [rows] = await knexx.raw<IExists[][]>(sql, { email });
   return rows[0][0];
 };
 
@@ -59,7 +54,7 @@ const isUsernameExists = async (username: string): Promise<boolean> => {
           username = :username
       );
   `;
-  const [rows] = await pool.query<IExists[]>(sql, { username });
+  const [rows] = await knexx.raw<IExists[][]>(sql, { username });
   return rows[0][0];
 };
 
