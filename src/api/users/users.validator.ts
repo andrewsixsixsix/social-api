@@ -68,5 +68,6 @@ export type ILogin = z.infer<typeof Login>;
 export type IRegistration = z.infer<typeof Registration>;
 
 // validators
-export const validateLoginData = (body: any): ILogin => Login.parse(body);
-export const validateRegistrationData = (body: any): IRegistration => Registration.parse(body);
+export const validateLoginData = (body: ILogin): ILogin => Login.parse(body);
+export const validateRegistrationData = (body: IRegistration): IRegistration =>
+  Registration.parse(body);

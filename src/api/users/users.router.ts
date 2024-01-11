@@ -29,10 +29,10 @@ async function handleRegistration(
   }
 }
 
-function handleLogin(req: IRequest<ILogin>, res: Response<ILogin>, next: NextFunction) {
+async function handleLogin(req: IRequest<ILogin>, res: Response<IUser>, next: NextFunction) {
   try {
-    const login = userService.login(req.body);
-    res.status(HttpStatusCode.OK).json(login);
+    const user = await userService.login(req.body);
+    res.status(HttpStatusCode.OK).json(user);
   } catch (err) {
     next(err);
   }

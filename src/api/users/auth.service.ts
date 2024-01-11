@@ -9,7 +9,14 @@ import { userRepository } from './users.reporitory.js';
 import { HttpStatusCode } from '../../constants/http.js';
 import { HttpError } from '../../common/errors/HttpError.js';
 
-export const login = (loginData: ILogin) => validateLoginData(loginData);
+export const login = async (loginData: ILogin): Promise<IUser> => {
+  const login: ILogin = validateLoginData(loginData);
+  const user = await userRepository.findByUsername(login.username);
+  if (!user) {
+    throw new HttpError(HttpStatusCode.NOT_FOUND, `User '${login.username}' not found`);
+  }
+  return user;
+};
 
 export const logout = () => {};
 
