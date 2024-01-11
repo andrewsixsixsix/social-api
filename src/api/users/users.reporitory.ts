@@ -30,9 +30,7 @@ const create = async (userData: IRegistration) => {
 };
 
 const findByUsername = async (username: string): Promise<IUser | null> => {
-  const res = await knexx<IUser>('users')
-    .select('id', { firstName: 'first_name', lastName: 'last_name' }, 'username', 'email')
-    .where({ username });
+  const res = await knexx.select().from<IUser>('users').where({ username });
   return res.length == 0 ? null : res[0];
 };
 

@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 
-import { userService } from './auth.service.js';
+import { authService } from './auth.service.js';
 import { HttpHeader, HttpStatusCode } from '../../constants/http.js';
 import { IUser } from './users.type.js';
 import { ILogin, IRegistration } from './users.validator.js';
@@ -19,7 +19,7 @@ async function handleRegistration(
   next: NextFunction,
 ) {
   try {
-    const user: IUser = await userService.register(req.body);
+    const user: IUser = await authService.register(req.body);
     res
       .header(HttpHeader.CONTENT_LOCATION, `/users/${user.id}`)
       .status(HttpStatusCode.CREATED)
@@ -31,8 +31,9 @@ async function handleRegistration(
 
 async function handleLogin(req: IRequest<ILogin>, res: Response<IUser>, next: NextFunction) {
   try {
-    const user = await userService.login(req.body);
-    res.status(HttpStatusCode.OK).json(user);
+    const user = await authService.login(req.body);
+    const { id, password, ...userData } = user;
+    res.status(HttpStatusCode.OK).json(userData);
   } catch (err) {
     next(err);
   }
