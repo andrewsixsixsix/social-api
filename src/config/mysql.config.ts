@@ -11,7 +11,7 @@ const mysqlConfig: Knex.MySql2ConnectionConfig = {
   port: Number(process.env.DATABASE_PORT),
   multipleStatements: false,
   namedPlaceholders: true,
-  rowsAsArray: true,
+  rowsAsArray: false,
 };
 
 const poolConfig: Knex.PoolConfig = {

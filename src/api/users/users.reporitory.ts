@@ -5,7 +5,7 @@ import { knexx } from '../../config/mysql.config.js';
 import { IUser } from './users.type.js';
 
 interface IExists extends RowDataPacket {
-  0: boolean;
+  isExists: number;
 }
 
 const create = async (userData: IRegistration) => {
@@ -45,10 +45,12 @@ const isEmailExists = async (email: string): Promise<boolean> => {
           users
         WHERE
           email = :email
-      );
+      ) AS isExists;
   `;
-  const [rows] = await knexx.raw<IExists[][]>(sql, { email });
-  return rows[0][0];
+  const res = await knexx.raw(sql, { email });
+  // underlying mysql library returned [IExists[], FieldPacket[]]
+  const rows = res[0] as IExists[];
+  return !!rows[0].isExists;
 };
 
 const isUsernameExists = async (username: string): Promise<boolean> => {
@@ -60,10 +62,12 @@ const isUsernameExists = async (username: string): Promise<boolean> => {
           users
         WHERE
           username = :username
-      );
+      ) AS isExists;
   `;
-  const [rows] = await knexx.raw<IExists[][]>(sql, { username });
-  return rows[0][0];
+  const res = await knexx.raw(sql, { username });
+  // underlying mysql library returned [IExists[], FieldPacket[]]
+  const rows = res[0] as IExists[];
+  return !!rows[0].isExists;
 };
 
-export const userRepository = { create, isEmailExists, isUsernameExists };
+export const userRepository = { create, findByUsername, isEmailExists, isUsernameExists };
