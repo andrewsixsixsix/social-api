@@ -1,4 +1,5 @@
 export const enum HttpHeader {
+  AUTHORIZATION = 'Authorization',
   CONTENT_LOCATION = 'Content-Location',
 }
 

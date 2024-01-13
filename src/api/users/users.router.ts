@@ -33,7 +33,8 @@ async function handleLogin(req: IRequest<ILogin>, res: Response<IUser>, next: Ne
   try {
     const user = await authService.login(req.body);
     const { id, password, ...userData } = user;
-    res.status(HttpStatusCode.OK).json(userData);
+    const jwe = authService.generateJwe({ id: id! });
+    res.header(HttpHeader.AUTHORIZATION, `Bearer ${jwe}`).status(HttpStatusCode.OK).json(userData);
   } catch (err) {
     next(err);
   }

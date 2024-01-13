@@ -1,3 +1,6 @@
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+
 import {
   ILogin,
   IRegistration,
@@ -9,6 +12,7 @@ import { userRepository } from './users.reporitory.js';
 import { HttpStatusCode } from '../../constants/http.js';
 import { HttpError } from '../../common/errors/HttpError.js';
 import { hashPassword } from './utils/hash-password.js';
+import { IJwtPayload } from '../../common/types.js';
 
 export const login = async (loginData: ILogin): Promise<IUser> => {
   const login: ILogin = validateLoginData(loginData);
@@ -48,4 +52,23 @@ export const register = async (registrationData: IRegistration): Promise<IUser> 
   };
 };
 
-export const authService = { login, logout, register };
+// JWS(JWT)
+const generateJws = (payload: IJwtPayload) => {
+  const privateKey = process.env.JWS_PRIVATE_KEY;
+  if (!privateKey) {
+    throw new Error('Missing JWS private key');
+  }
+  return jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: '1h' });
+};
+
+// JWE(JWS(JWT))
+export const generateJwe = (payload: IJwtPayload) => {
+  const jws = generateJws(payload);
+  const key = process.env.JWE_PUBLIC_KEY;
+  if (!key) {
+    throw new Error('Missing JWE public key');
+  }
+  return crypto.publicEncrypt(key, Buffer.from(jws)).toString('hex');
+};
+
+export const authService = { generateJwe, login, logout, register };
