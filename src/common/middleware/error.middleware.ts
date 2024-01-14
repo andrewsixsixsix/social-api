@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
+import jwt from 'jsonwebtoken';
 
 import { HttpStatusCode } from '../constants/http.js';
 import { HttpError } from '../errors/HttpError.js';
@@ -16,6 +17,8 @@ export const handleError = (err: unknown, _req: Request, res: Response, _next: N
     response = handleUnprocessableContent(err);
   } else if (err instanceof HttpError) {
     response = handleHttpError(err);
+  } else if (err instanceof jwt.JsonWebTokenError) {
+    response = handleJwtError(err);
   } else {
     response = handleAnyError(err);
   }
@@ -35,6 +38,27 @@ const handleHttpError = (err: HttpError): IErrorResponse => {
   return {
     status: err.statusCode,
     message: err.message,
+  };
+};
+
+const handleJwtError = (err: jwt.JsonWebTokenError): IErrorResponse => {
+  let message: string;
+
+  switch (err.name) {
+    case jwt.JsonWebTokenError.name:
+    case jwt.NotBeforeError.name:
+      message = 'JWT is malformed or invalid';
+      break;
+    case jwt.TokenExpiredError.name:
+      message = 'JWT is expired';
+      break;
+    default:
+      message = 'Failed to validate JWT';
+  }
+
+  return {
+    status: HttpStatusCode.UNAUTHORIZED,
+    message,
   };
 };
 

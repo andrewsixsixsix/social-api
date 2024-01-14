@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import {
   ILogin,
@@ -12,7 +12,6 @@ import { userRepository } from './users.reporitory.js';
 import { HttpStatusCode } from '../../common/constants/http.js';
 import { HttpError } from '../../common/errors/HttpError.js';
 import { hashPassword } from './utils/hash-password.js';
-import { IJwtPayload } from '../../common/types.js';
 
 export const login = async (loginData: ILogin): Promise<IUser> => {
   const login: ILogin = validateLoginData(loginData);
@@ -53,10 +52,10 @@ export const register = async (registrationData: IRegistration): Promise<IUser> 
 };
 
 // JWS(JWT)
-const generateJws = (payload: IJwtPayload): Promise<string> => {
+const generateJws = (payload: JwtPayload): Promise<string> => {
   const privateKey = process.env.JWS_PRIVATE_KEY;
   if (!privateKey) {
-    throw new Error('Missing JWS private key');
+    throw new Error('JWS private key is missing');
   }
   return new Promise((res, rej) =>
     jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: '1h' }, (err, token) =>
@@ -66,11 +65,11 @@ const generateJws = (payload: IJwtPayload): Promise<string> => {
 };
 
 // JWE(JWS(JWT))
-export const generateJwe = async (payload: IJwtPayload) => {
+export const generateJwe = async (payload: JwtPayload) => {
   const jws = await generateJws(payload);
   const key = process.env.JWE_PUBLIC_KEY;
   if (!key) {
-    throw new Error('Missing JWE public key');
+    throw new Error('JWE public key is missing');
   }
   return crypto.publicEncrypt(key, Buffer.from(jws)).toString('hex');
 };

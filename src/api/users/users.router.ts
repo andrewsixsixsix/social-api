@@ -1,17 +1,18 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { NextFunction, Response } from 'express';
 
 import { authService } from './auth.service.js';
 import { HttpHeader, HttpStatusCode } from '../../common/constants/http.js';
 import { IUser } from './users.type.js';
 import { ILogin, IRegistration } from './users.validator.js';
 import { IRequest } from '../../common/types.js';
+import { authenticate } from '../../common/middleware/auth.middleware.js';
 
 export const usersRouterV1 = express.Router();
 export const usersRouterV2 = express.Router();
 
 usersRouterV1.route('/register').post(handleRegistration);
 usersRouterV1.route('/login').post(handleLogin);
-usersRouterV1.route('/logout').get(handleLogout);
+usersRouterV1.route('/logout').get(authenticate, handleLogout);
 
 async function handleRegistration(
   req: IRequest<IRegistration>,
@@ -33,14 +34,14 @@ async function handleLogin(req: IRequest<ILogin>, res: Response<IUser>, next: Ne
   try {
     const user = await authService.login(req.body);
     const { id, password, ...userData } = user;
-    const jwe = await authService.generateJwe({ id: id! });
+    const jwe = await authService.generateJwe({ userId: id! });
     res.header(HttpHeader.AUTHORIZATION, `Bearer ${jwe}`).status(HttpStatusCode.OK).json(userData);
   } catch (err) {
     next(err);
   }
 }
 
-function handleLogout(_req: Request, res: Response<ILogin>, next: NextFunction) {
+function handleLogout(_req: IRequest, res: Response<ILogin>, next: NextFunction) {
   try {
     res.status(HttpStatusCode.OK).json();
   } catch (err) {
