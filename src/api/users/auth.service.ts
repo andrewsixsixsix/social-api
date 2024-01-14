@@ -53,17 +53,21 @@ export const register = async (registrationData: IRegistration): Promise<IUser> 
 };
 
 // JWS(JWT)
-const generateJws = (payload: IJwtPayload) => {
+const generateJws = (payload: IJwtPayload): Promise<string> => {
   const privateKey = process.env.JWS_PRIVATE_KEY;
   if (!privateKey) {
     throw new Error('Missing JWS private key');
   }
-  return jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: '1h' });
+  return new Promise((res, rej) =>
+    jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: '1h' }, (err, token) =>
+      err ? rej(err) : res(token!),
+    ),
+  );
 };
 
 // JWE(JWS(JWT))
-export const generateJwe = (payload: IJwtPayload) => {
-  const jws = generateJws(payload);
+export const generateJwe = async (payload: IJwtPayload) => {
+  const jws = await generateJws(payload);
   const key = process.env.JWE_PUBLIC_KEY;
   if (!key) {
     throw new Error('Missing JWE public key');
