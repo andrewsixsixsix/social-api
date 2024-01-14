@@ -1,8 +1,8 @@
-import { IRegistration } from './users.validator.js';
+import { IRegistration } from '../auth/validator.js';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 
 import { knexx } from '../../config/mysql.config.js';
-import { IUser } from './users.type.js';
+import { IUser } from '../../common/types.js';
 
 interface IExists extends RowDataPacket {
   isExists: number;

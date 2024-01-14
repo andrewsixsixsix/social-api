@@ -1,17 +1,12 @@
 import crypto from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-import {
-  ILogin,
-  IRegistration,
-  validateLoginData,
-  validateRegistrationData,
-} from './users.validator.js';
-import { IUser } from './users.type.js';
-import { userRepository } from './users.reporitory.js';
+import { ILogin, IRegistration, validateLoginData, validateRegistrationData } from './validator.js';
+import { userRepository } from '../users/reporitory.js';
 import { HttpStatusCode } from '../../common/constants/http.js';
 import { HttpError } from '../../common/errors/HttpError.js';
 import { hashPassword } from './utils/hash-password.js';
+import { IUser } from '../../common/types.js';
 
 export const login = async (loginData: ILogin): Promise<IUser> => {
   const login: ILogin = validateLoginData(loginData);

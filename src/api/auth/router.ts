@@ -1,18 +1,17 @@
 import express, { NextFunction, Response } from 'express';
 
-import { authService } from './auth.service.js';
-import { HttpHeader, HttpStatusCode } from '../../common/constants/http.js';
-import { IUser } from './users.type.js';
-import { ILogin, IRegistration } from './users.validator.js';
-import { IRequest } from '../../common/types.js';
 import { authenticate } from '../../common/middleware/auth.middleware.js';
+import { IRequest, IUser } from '../../common/types.js';
+import { ILogin, IRegistration } from './validator.js';
+import { authService } from './service.js';
+import { HttpHeader, HttpStatusCode } from '../../common/constants/http.js';
 
-export const usersRouterV1 = express.Router();
-export const usersRouterV2 = express.Router();
+export const authRouterV1 = express.Router();
+export const authRouterV2 = express.Router();
 
-usersRouterV1.route('/register').post(handleRegistration);
-usersRouterV1.route('/login').post(handleLogin);
-usersRouterV1.route('/logout').get(authenticate, handleLogout);
+authRouterV1.route('/register').post(handleRegistration);
+authRouterV1.route('/login').post(handleLogin);
+authRouterV1.route('/logout').get(authenticate, handleLogout);
 
 async function handleRegistration(
   req: IRequest<IRegistration>,

@@ -10,3 +10,12 @@ export interface IRequest<T = any, U extends Query = Query> extends Request, IAu
   body: T;
   query: U;
 }
+
+export interface IUser {
+  id?: number;
+  firstName: string;
+  lastName: string | null;
+  username: string;
+  email: string;
+  password?: string;
+}
