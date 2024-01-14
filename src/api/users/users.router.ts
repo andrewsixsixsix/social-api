@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 
 import { authService } from './auth.service.js';
-import { HttpHeader, HttpStatusCode } from '../../constants/http.js';
+import { HttpHeader, HttpStatusCode } from '../../common/constants/http.js';
 import { IUser } from './users.type.js';
 import { ILogin, IRegistration } from './users.validator.js';
 import { IRequest } from '../../common/types.js';

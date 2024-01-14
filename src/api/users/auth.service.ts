@@ -9,7 +9,7 @@ import {
 } from './users.validator.js';
 import { IUser } from './users.type.js';
 import { userRepository } from './users.reporitory.js';
-import { HttpStatusCode } from '../../constants/http.js';
+import { HttpStatusCode } from '../../common/constants/http.js';
 import { HttpError } from '../../common/errors/HttpError.js';
 import { hashPassword } from './utils/hash-password.js';
 import { IJwtPayload } from '../../common/types.js';

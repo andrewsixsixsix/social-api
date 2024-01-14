@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 
 import { HttpStatusCode } from '../constants/http.js';
-import { HttpError } from '../common/errors/HttpError.js';
+import { HttpError } from '../errors/HttpError.js';
 
 interface IErrorResponse {
   status: HttpStatusCode;
