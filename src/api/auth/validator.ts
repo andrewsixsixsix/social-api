@@ -37,6 +37,13 @@ const Password = z
   .min(8, 'Minimum password length is 8 characters')
   .max(64, 'Maximum password length is 64 characters');
 
+const DateOfBirth = z
+  .string({
+    required_error: 'Date of birth is required',
+    invalid_type_error: 'Date of birth must be a string',
+  })
+  .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date. Example: 2023-12-31');
+
 const Login = z.object({
   username: Username,
   password: Password,
@@ -53,6 +60,7 @@ const Registration = z
       required_error: 'Password confirmation is required',
       invalid_type_error: 'Password confirmation must be a string',
     }),
+    dateOfBirth: DateOfBirth,
   })
   .refine((data) => data.password === data.passwordConfirmation, 'Passwords do not match')
   .transform((data) => ({
@@ -61,6 +69,7 @@ const Registration = z
     username: data.username,
     email: data.email,
     password: data.password,
+    dateOfBirth: data.dateOfBirth,
   }));
 
 // types

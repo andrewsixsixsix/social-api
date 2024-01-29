@@ -17,5 +17,6 @@ export interface IUser {
   lastName: string | null;
   username: string;
   email: string;
+  dateOfBirth: string;
   password?: string;
 }

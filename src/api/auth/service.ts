@@ -43,6 +43,7 @@ export const register = async (registrationData: IRegistration): Promise<IUser> 
     lastName: registration.lastName,
     username: registration.username,
     email: registration.email,
+    dateOfBirth: registration.dateOfBirth,
   };
 };
 

@@ -13,16 +13,18 @@ const create = async (userData: IRegistration) => {
       INSERT INTO users (
         username,
         email,
-        password,
         first_name,
-        last_name
+        last_name,
+        date_of_birth,
+        password
       )
       VALUES (
         :username,
         :email,
-        :password,
         :firstName,
-        :lastName
+        :lastName,
+        :dateOfBirth,
+        :password
       );
   `;
   const [res] = await knexx.raw<ResultSetHeader[]>(sql, userData);
@@ -37,6 +39,7 @@ const findByUsername = async (username: string): Promise<IUser | null> => {
       'email',
       { firstName: 'first_name' },
       { lastName: 'last_name' },
+      { dateOfBirth: 'date_of_birth' },
       'password',
     )
     .from<IUser>('users')

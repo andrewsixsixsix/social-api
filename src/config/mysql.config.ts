@@ -12,6 +12,7 @@ const mysqlConfig: Knex.MySql2ConnectionConfig = {
   multipleStatements: false,
   namedPlaceholders: true,
   rowsAsArray: false,
+  dateStrings: true,
 };
 
 const poolConfig: Knex.PoolConfig = {
