@@ -1,15 +1,15 @@
 import crypto from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-import { ILogin, IRegistration, validateLoginData, validateRegistrationData } from './validator.js';
 import { userRepository } from '../users/reporitory.js';
 import { HttpStatusCode } from '../../common/constants/http.js';
 import { HttpError } from '../../common/errors/HttpError.js';
 import { hashPassword } from './utils/hash-password.js';
-import { IUser } from '../../common/types.js';
+import { ILogin, IRegistration, IUser } from '../../common/types.js';
+import { validator } from '../../common/validation/validator.js';
 
 export const login = async (loginData: ILogin): Promise<IUser> => {
-  const login: ILogin = validateLoginData(loginData);
+  const login: ILogin = validator.loginData(loginData);
   const user = await userRepository.findByUsername(login.username);
   if (!user) {
     throw new HttpError(HttpStatusCode.NOT_FOUND, `User '${login.username}' not found`);
@@ -23,7 +23,7 @@ export const login = async (loginData: ILogin): Promise<IUser> => {
 export const logout = () => {};
 
 export const register = async (registrationData: IRegistration): Promise<IUser> => {
-  const registration: IRegistration = validateRegistrationData(registrationData);
+  const registration: IRegistration = validator.registrationData(registrationData);
   const [isEmailExists, isUsernameExists] = await Promise.all([
     userRepository.isEmailExists(registration.email),
     userRepository.isUsernameExists(registration.username),

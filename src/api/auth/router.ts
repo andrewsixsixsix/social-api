@@ -1,8 +1,7 @@
 import express, { NextFunction, Response } from 'express';
 
 import { authenticate } from '../../common/middleware/auth.middleware.js';
-import { IRequest, IUser } from '../../common/types.js';
-import { ILogin, IRegistration } from './validator.js';
+import { ILogin, IRegistration, IRequest, IUser } from '../../common/types.js';
 import { authService } from './service.js';
 import { HttpHeader, HttpStatusCode } from '../../common/constants/http.js';
 
