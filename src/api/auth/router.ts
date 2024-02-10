@@ -18,9 +18,11 @@ async function handleRegistration(
   next: NextFunction,
 ) {
   try {
-    const user: IUser = await authService.register(req.body);
+    const { id, ...user }: IUser = await authService.register(req.body);
+    const jwe = await authService.generateJwe({ userId: id! });
     res
-      .header(HttpHeader.CONTENT_LOCATION, `/users/${user.id}`)
+      .header(HttpHeader.CONTENT_LOCATION, `/users/${id}`)
+      .header(HttpHeader.AUTHORIZATION, `Bearer ${jwe}`)
       .status(HttpStatusCode.CREATED)
       .json(user);
   } catch (err) {
