@@ -7,6 +7,7 @@ import { HttpError } from '../../common/errors/HttpError.js';
 import { hashPassword } from './utils/hash-password.js';
 import { ILogin, IRegistration, IUser } from '../../common/types.js';
 import { validator } from '../../common/validation/validator.js';
+import { sendEmail } from '../../common/services/email.service.js';
 
 export const login = async (loginData: ILogin): Promise<IUser> => {
   const login: ILogin = validator.loginData(loginData);
@@ -37,6 +38,15 @@ export const register = async (registrationData: IRegistration): Promise<IUser> 
   }
   registration.password = hashPassword(registration.password, registration.username);
   const id = await userRepository.create(registration);
+  const verificationLink = `http://localhost:6969/api/v1/users/verify/1234`;
+  await sendEmail({
+    to: registration.email,
+    from: 'Social <eaakkount@gmail.com>',
+    subject: 'Verify your Social account',
+    text: 'Verify your Social account',
+    html: `<p>Click the <a href=${verificationLink}>link</a> to verify your Social account</p>`,
+    priority: 'high',
+  });
   return {
     id,
     firstName: registration.firstName,
