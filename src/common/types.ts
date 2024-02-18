@@ -9,6 +9,14 @@ export interface IAuthJwtPayload extends JwtPayload {
   userId?: number;
 }
 
+export interface ICheckEmail {
+  email: string;
+}
+
+export interface ICheckUsername {
+  username: string;
+}
+
 export type ILogin = z.infer<typeof schema.login>;
 
 export type IRegistration = z.infer<typeof schema.registration>;

@@ -2,7 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 
 import { v1, v2 } from './app.router.js';
-import { handleError } from './common/middleware/error.middleware.js';
+import { handleError } from './common/middlewares/index.js';
 
 dotenv.config();
 

@@ -1,22 +1,15 @@
 import express, { NextFunction, Response } from 'express';
 
-import { IRequest } from '../../common/types.js';
+import { ICheckEmail, ICheckUsername, IRequest } from '../../common/types.js';
 import { userService } from './service.js';
 import { HttpError } from '../../common/errors/HttpError.js';
 import { HttpStatusCode } from '../../common/constants/http.js';
+import { validate } from '../../common/middlewares/index.js';
 
 export const userRouterV1 = express.Router();
 
-userRouterV1.route('/check-email').post(checkEmail);
-userRouterV1.route('/check-username').post(checkUsername);
-
-interface ICheckEmail {
-  email: string;
-}
-
-interface ICheckUsername {
-  username: string;
-}
+userRouterV1.route('/check-email').post(validate, checkEmail);
+userRouterV1.route('/check-username').post(validate, checkUsername);
 
 async function checkEmail(req: IRequest<ICheckEmail>, res: Response, next: NextFunction) {
   try {

@@ -1,9 +1,9 @@
 import { schema } from './schema.js';
-import { ILogin, IRegistration } from '../types.js';
+import { ICheckEmail, ICheckUsername, ILogin, IRegistration } from '../types.js';
 
-const email = (email: string): string => schema.email.parse(email);
+const email = (body: ICheckEmail): string => schema.email.parse(body.email);
 const loginData = (body: ILogin): ILogin => schema.login.parse(body);
 const registrationData = (body: IRegistration): IRegistration => schema.registration.parse(body);
-const username = (username: string): string => schema.username.parse(username);
+const username = (body: ICheckUsername): string => schema.username.parse(body.username);
 
 export const validator = { email, loginData, registrationData, username };

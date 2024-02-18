@@ -6,11 +6,9 @@ import { HttpStatusCode } from '../../common/constants/http.js';
 import { HttpError } from '../../common/errors/HttpError.js';
 import { hashPassword } from './utils/hash-password.js';
 import { ILogin, IRegistration, IUser } from '../../common/types.js';
-import { validator } from '../../common/validation/validator.js';
 import { sendEmail } from '../../common/services/email.service.js';
 
-export const login = async (loginData: ILogin): Promise<IUser> => {
-  const login: ILogin = validator.loginData(loginData);
+export const login = async (login: ILogin): Promise<IUser> => {
   const user = await userRepository.findByUsername(login.username);
   if (!user) {
     throw new HttpError(HttpStatusCode.NOT_FOUND, `User '${login.username}' not found`);
@@ -23,8 +21,7 @@ export const login = async (loginData: ILogin): Promise<IUser> => {
 
 export const logout = () => {};
 
-export const register = async (registrationData: IRegistration): Promise<IUser> => {
-  const registration: IRegistration = validator.registrationData(registrationData);
+export const register = async (registration: IRegistration): Promise<IUser> => {
   const [isEmailExists, isUsernameExists] = await Promise.all([
     userRepository.isEmailExists(registration.email),
     userRepository.isUsernameExists(registration.username),

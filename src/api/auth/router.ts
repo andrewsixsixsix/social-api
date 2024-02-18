@@ -1,6 +1,6 @@
 import express, { NextFunction, Response } from 'express';
 
-import { authenticate } from '../../common/middleware/auth.middleware.js';
+import { authenticate, validate } from '../../common/middlewares/index.js';
 import { ILogin, IRegistration, IRequest, IUser } from '../../common/types.js';
 import { authService } from './service.js';
 import { HttpHeader, HttpStatusCode } from '../../common/constants/http.js';
@@ -8,8 +8,8 @@ import { HttpHeader, HttpStatusCode } from '../../common/constants/http.js';
 export const authRouterV1 = express.Router();
 export const authRouterV2 = express.Router();
 
-authRouterV1.route('/register').post(handleRegistration);
-authRouterV1.route('/login').post(handleLogin);
+authRouterV1.route('/register').post(validate, handleRegistration);
+authRouterV1.route('/login').post(validate, handleLogin);
 authRouterV1.route('/logout').get(authenticate, handleLogout);
 
 async function handleRegistration(
