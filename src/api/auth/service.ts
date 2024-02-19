@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import { userRepository } from '../users/reporitory.js';
